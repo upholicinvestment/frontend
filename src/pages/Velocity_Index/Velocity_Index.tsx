@@ -72,6 +72,14 @@ const Velocity_Index = () => {
     return null;
   };
 
+  const handleIncreaseRefPrice = () => {
+    setReferencePrice(prev => prev + 500);
+  };
+
+  const handleDecreaseRefPrice = () => {
+    setReferencePrice(prev => Math.max(20000, prev - 500));
+  };
+
   return (
     <motion.div 
       className="bg-gray-900 text-gray-200 p-4 rounded-xl shadow-md w-full max-w-6xl mx-auto"
@@ -103,6 +111,22 @@ const Velocity_Index = () => {
           >
             Ref Line
           </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.05 }}
+            className="px-3 py-1 rounded-md text-xs bg-gray-800 text-gray-400"
+            onClick={handleIncreaseRefPrice}
+          >
+            ↑ Ref
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.05 }}
+            className="px-3 py-1 rounded-md text-xs bg-gray-800 text-gray-400"
+            onClick={handleDecreaseRefPrice}
+          >
+            ↓ Ref
+          </motion.button>
         </div>
       </div>
 
@@ -117,7 +141,10 @@ const Velocity_Index = () => {
                 strokeDasharray="3 3"
                 strokeWidth={1}
                 label={{
-                  value: 'Ref', position: 'top', fill: '#D1A617', fontSize: 10
+                  value: `Ref: ${referencePrice.toLocaleString()}`, 
+                  position: 'top', 
+                  fill: '#D1A617', 
+                  fontSize: 10
                 }}
               />
             )}
@@ -169,7 +196,7 @@ const Velocity_Index = () => {
       <div className="flex justify-between px-2 mt-1 text-gray-400 text-xs">
         <span>20,000</span>
         <span>22,000</span>
-        <span>24,000</span>
+        <span className="text-yellow-400">{referencePrice.toLocaleString()}</span>
         <span>26,000</span>
         <span>28,000</span>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Treemap, ResponsiveContainer, TreemapProps } from "recharts";
+import { Treemap, ResponsiveContainer } from "recharts";
 
 interface TreeMapData {
   name: string;
@@ -92,14 +92,8 @@ const HeatmapChart: React.FC = () => {
           dataKey="size"
           stroke="#fff"
           fill="#8884d8"
-          content={<CustomizedContent 
-            x={0} 
-            y={0} 
-            width={0} 
-            height={0} 
-            index={0} 
-            name="" 
-          />}
+          // TypeScript will infer the props correctly here
+          content={<CustomizedContent x={0} y={0} width={0} height={0} index={0} name="" />}
         />
       </ResponsiveContainer>
     </div>
