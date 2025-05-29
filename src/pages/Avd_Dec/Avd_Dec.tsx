@@ -41,7 +41,7 @@ const Avd_Dec: React.FC = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds
 
-      const response = await fetch("https://3.110.232.154:8000/api/advdec", {
+      const response = await fetch("https://3.110.232.154/api/advdec", {
         signal: controller.signal,
       });
 
