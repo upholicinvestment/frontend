@@ -3,6 +3,7 @@ import {
   Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
@@ -27,7 +28,7 @@ interface MarketBreadthData {
   chartData: ChartData[];
 }
 
-const Avd_Dec: React.FC = () => {
+const Avd_Dec = () => {
   const [data, setData] = useState<MarketBreadthData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,13 +38,19 @@ const Avd_Dec: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // Create an AbortController with a 10-second timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch("https://shepherd-workflow-phys-harassment.trycloudflare.com/api/advdec", {
-        signal: controller.signal,
-      });
+      const response = await fetch(
+        "https://shepherd-workflow-phys-harassment.trycloudflare.com/api/advdec",
+        {
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
 
       clearTimeout(timeoutId);
 
@@ -54,31 +61,25 @@ const Avd_Dec: React.FC = () => {
 
       const result: MarketBreadthData = await response.json();
       setData(result);
-      setLoading(false); // Only set loading to false on successful fetch
+      setLoading(false);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       setError(msg);
       console.error("Fetch error:", err);
-
-      // Retry after 5 seconds if connection was refused or aborted
-      if (
-        msg.includes("Failed to fetch") ||
-        msg.includes("connection refused") ||
-        msg.includes("aborted") ||
-        msg.includes("TimeoutError")
-      ) {
-        setTimeout(fetchMarketBreadth, 5000);
-      }
+      setLoading(false);
+      
+      // Retry after 5 seconds
+      setTimeout(fetchMarketBreadth, 5000);
     }
   };
 
   useEffect(() => {
     fetchMarketBreadth();
-    const interval = setInterval(fetchMarketBreadth, 60_000);
+    const interval = setInterval(fetchMarketBreadth, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <motion.div
       className="w-full max-w-5xl min-h-[300px] bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-xl p-6"
       initial={{ opacity: 0, y: 50 }}
@@ -103,7 +104,7 @@ const Avd_Dec: React.FC = () => {
     return (
       <Wrapper>
         <div className="flex items-center justify-center h-full text-red-400 text-lg">
-          Error: {error}
+          Error: {error} (retrying...)
         </div>
       </Wrapper>
     );
@@ -119,31 +120,35 @@ const Avd_Dec: React.FC = () => {
         📈 Market Breadth (Adv/Dec)
       </h2>
 
-      <div className="flex justify-center gap-10 mb-6 text-white text-base sm:text-lg">
-        <div>
-          <span className="text-gray-400">Advances: </span>
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-10 mb-6 text-white text-base sm:text-lg">
+        <div className="flex items-center">
+          <span className="text-gray-400 mr-2">Advances:</span>
           <span className="text-green-400 font-semibold">
             {current.advances}
           </span>
         </div>
-        <div>
-          <span className="text-gray-400">Declines: </span>
+        <div className="flex items-center">
+          <span className="text-gray-400 mr-2">Declines:</span>
           <span className="text-red-400 font-semibold">
             {current.declines}
           </span>
         </div>
-        <div>
-          <span className="text-gray-400">Total: </span>
+        <div className="flex items-center">
+          <span className="text-gray-400 mr-2">Total:</span>
           <span className="text-blue-300 font-semibold">{current.total}</span>
         </div>
       </div>
 
       <ResponsiveContainer width="100%" height={200}>
-        <LineChart data={chartData} margin={{ right: 20, left: -20 }}>
+        <LineChart
+          data={chartData}
+          margin={{ top: 5, right: 20, left: -20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
           <XAxis
             dataKey="time"
             stroke="#9CA3AF"
-            tick={{ fill: "#9CA3AF", fontSize: 7 }}
+            tick={{ fill: "#9CA3AF", fontSize: 10 }}
           />
           <YAxis stroke="#9CA3AF" tick={{ fill: "#9CA3AF", fontSize: 10 }} />
           <Tooltip

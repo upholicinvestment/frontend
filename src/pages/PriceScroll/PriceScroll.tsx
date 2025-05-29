@@ -10,6 +10,7 @@ interface RawStockData {
   close: string;
   high?: string;
   low?: string;
+  timestamp?: string;
 }
 
 interface StockData {
@@ -77,10 +78,21 @@ const PriceScroll = () => {
   const [stocks, setStocks] = useState<StockData[]>([]);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchStocks = async () => {
     try {
-      const response = await fetch('https://shepherd-workflow-phys-harassment.trycloudflare.com/api/stocks');
+      const response = await fetch('https://shepherd-workflow-phys-harassment.trycloudflare.com/api/stocks', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const rawData: RawStockData[] = await response.json();
 
       const newStocks: StockData[] = rawData
@@ -91,7 +103,6 @@ const PriceScroll = () => {
           const previousClose = parseFloat(stock.close);
           const openPrice = parseFloat(stock.open);
 
-          // Calculate percentage changes
           const changePercent = ((currentPrice - previousClose) / previousClose) * 100;
           const intradayChangePercent = ((currentPrice - openPrice) / openPrice) * 100;
 
@@ -107,9 +118,13 @@ const PriceScroll = () => {
 
       setStocks(newStocks);
       setIsLoading(false);
+      setError(null);
     } catch (error) {
       console.error('Error fetching stocks:', error);
+      setError(error instanceof Error ? error.message : 'Failed to fetch stock data');
       setIsLoading(false);
+      // Retry after 5 seconds
+      setTimeout(fetchStocks, 5000);
     }
   };
 
@@ -120,6 +135,8 @@ const PriceScroll = () => {
   }, []);
 
   useEffect(() => {
+    if (stocks.length === 0) return;
+
     const SCROLL_SPEED = 3;
     const scrollInterval = setInterval(() => {
       setScrollPosition(prev => (prev <= -100 * stocks.length ? 0 : prev - SCROLL_SPEED));
@@ -133,6 +150,16 @@ const PriceScroll = () => {
       <div className="w-full sticky z-20 bg-gradient-to-r from-gray-900 to-gray-800 overflow-hidden py-3 border-y border-gray-700 shadow-lg">
         <div className="flex justify-center items-center h-16">
           <span className="text-white">Loading market data...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full sticky z-20 bg-gradient-to-r from-gray-900 to-gray-800 overflow-hidden py-3 border-y border-gray-700 shadow-lg">
+        <div className="flex justify-center items-center h-16">
+          <span className="text-red-400">{error} (retrying...)</span>
         </div>
       </div>
     );
