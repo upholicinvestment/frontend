@@ -80,7 +80,7 @@ const PriceScroll = () => {
 
   const fetchStocks = async () => {
     try {
-      const response = await fetch('http://3.110.232.154:8000/api/stocks');
+      const response = await fetch('https://3.110.232.154:8000/api/stocks');
       const rawData: RawStockData[] = await response.json();
 
       const newStocks: StockData[] = rawData
