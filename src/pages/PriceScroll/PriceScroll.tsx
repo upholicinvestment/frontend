@@ -80,7 +80,7 @@ const PriceScroll = () => {
 
   const fetchStocks = async () => {
     try {
-      const response = await fetch('https://api.upholictech.com/api/stocks');
+      const response = await fetch('https://loc-mg-federal-dealing.trycloudflare.com/api/stocks');
       const rawData: RawStockData[] = await response.json();
 
       const newStocks: StockData[] = rawData
