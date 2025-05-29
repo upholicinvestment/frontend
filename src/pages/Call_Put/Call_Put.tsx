@@ -6,6 +6,7 @@ import {
   LinearScale,
   BarElement,
   LineElement,
+  LineController,
   PointElement,
   Title,
   Tooltip,
@@ -13,11 +14,13 @@ import {
 } from 'chart.js';
 import type { ChartData, ChartOptions } from 'chart.js';
 
+// ✅ Register all required elements and controllers
 ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
   LineElement,
+  LineController,
   PointElement,
   Title,
   Tooltip,
@@ -70,7 +73,7 @@ export default function Call_Put() {
     plugins: {
       legend: {
         labels: {
-          color: '#E5E7EB', // Light gray text for legend
+          color: '#E5E7EB', // Light gray text
         },
       },
       tooltip: {
@@ -92,34 +95,32 @@ export default function Call_Put() {
       },
       y: {
         type: 'linear',
-        display: true,
         position: 'left',
         grid: {
-          color: '#374151', // gray-700
+          color: '#374151',
         },
         ticks: {
-          color: '#9CA3AF', // gray-400
+          color: '#9CA3AF',
         },
         title: {
           display: true,
           text: 'OI Volume (in M)',
-          color: '#D1D5DB', // gray-300
+          color: '#D1D5DB',
         },
       },
       y1: {
         type: 'linear',
-        display: true,
         position: 'right',
         grid: {
           drawOnChartArea: false,
         },
         ticks: {
-          color: '#9CA3AF', // gray-400
+          color: '#9CA3AF',
         },
         title: {
           display: true,
           text: 'Spot Price',
-          color: '#D1D5DB', // gray-300
+          color: '#D1D5DB',
         },
       },
     },
@@ -139,6 +140,7 @@ export default function Call_Put() {
     </motion.div>
   );
 }
+
 
 
 // import { useEffect, useState } from 'react';

@@ -5,6 +5,10 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
+  LineController,
+  BarController,
   Title,
   Tooltip,
   Legend,
@@ -14,6 +18,10 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
+  LineController,
+  BarController,
   Title,
   Tooltip,
   Legend
@@ -46,7 +54,7 @@ export default function Gex2DHorizontalChart() {
   const options = {
     indexAxis: 'y' as const,
     responsive: true,
-    maintainAspectRatio: false, // Important for height to apply
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const,

@@ -1,6 +1,7 @@
+// OrderFlowChart.tsx
+
 import { motion } from 'framer-motion';
 import { Chart } from 'react-chartjs-2';
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,19 +9,37 @@ import {
   BarElement,
   LineElement,
   PointElement,
+  LineController,
+  BarController,
   Title,
   Tooltip,
   Legend,
   ChartOptions,
   ChartData,
 } from 'chart.js';
-import { TrendingUp, TrendingDown, BarChart2, ArrowUp, ArrowDown } from 'react-feather';
+import {
+  TrendingUp,
+  TrendingDown,
+  BarChart2,
+  ArrowUp,
+  ArrowDown,
+} from 'react-feather';
 
-// Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
+// ✅ Register all components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  LineController,
+  BarController,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const OrderFlowChart = () => {
-  // Mock data
   const orderFlowData = {
     currentImbalance: 0.42,
     previousImbalance: 0.35,
@@ -56,7 +75,9 @@ const OrderFlowChart = () => {
         label: 'Order Flow Imbalance',
         type: 'bar',
         data: imbalances,
-        backgroundColor: imbalances.map(val => (val > 0 ? 'rgba(22, 163, 74, 0.8)' : 'rgba(220, 38, 38, 0.8)')),
+        backgroundColor: imbalances.map(val =>
+          val > 0 ? 'rgba(22, 163, 74, 0.8)' : 'rgba(220, 38, 38, 0.8)'
+        ),
         borderColor: imbalances.map(val => (val > 0 ? '#16a34a' : '#dc2626')),
         borderWidth: 1,
         order: 1,
@@ -232,8 +253,7 @@ const OrderFlowChart = () => {
 
       {/* Chart */}
       <div className="flex-1 max-h-[180px] bg-gray-800/50 rounded-lg border border-gray-700 mb-3 p-2">
-      <Chart type="bar" data={chartData} options={chartOptions} className="w-full h-full" />
-
+        <Chart type="bar" data={chartData} options={chartOptions} className="w-full h-full" />
       </div>
     </div>
   );
